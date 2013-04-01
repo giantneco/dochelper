@@ -6,6 +6,23 @@ import codecs
 
 import MeCab
 
+class PlainTextFrontEnd:
+    def __init__(self, filename):
+        self.filename = filename
+
+    # def parse(self):
+    #     """
+    #     日本語ファイルを開き、「。」または「．」で区切った文字列のリストにして返す。
+    #     """
+
+    #     lines = []
+    #     current = ""
+    #     with codecs.open(filename, 'r', 'utf-8') as f:
+    #         for line in f:
+    #             statements = line.split(u'。．')
+    #             if len(statements) > 1:
+    #     return lines
+
 if __name__ == '__main__':
     argvs = sys.argv
     if len(argvs) < 2:
