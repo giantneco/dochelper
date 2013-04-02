@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import main
-import unittest
+from unittest import main,TestCase
 
-class TestPlainTextFrontEnd(unittest.TestCase):
+class TestPlainTextFrontEnd(TestCase):
+    from dochelper.main import PlainTextFrontEnd
 
     def test_construct(self):
         """
@@ -13,6 +13,8 @@ class TestPlainTextFrontEnd(unittest.TestCase):
         Arguments:
         - `self`:
         """
-        
-        frontend = PlainTextFrontEnd("test.txt")
-        self.assertEqual(frontend.file, "test.txt")
+        frontend = PlainTextFrontEnd('test.txt')
+        self.assertEqual(frontend.file, 'test.txt')
+
+if __name__ == '__main__':
+    main()
