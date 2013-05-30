@@ -80,11 +80,20 @@ class PlainTextFrontEnd:
         - `self`:
         - `string`:
         """
-        for s in string.decode('utf-8').strip().split(u'。'):
+        if self.rest is None:
+            target = string
+        else:
+            target = self.rest.encode('utf-8') + string
+        splited = target.replace('\n', '').decode('utf-8').strip().split(u'。')
+        for s in splited[0:-1]:
             if len(s):
-                s = s.replace('\n', '')
                 s = s + u'。'
                 document.appendSentence(s)
+        if target.endswith('。'):
+            document.appendSentence(splited[-1])
+            self.rest = None
+        else:
+            self.rest = splited[-1]
 
     def readFromFile(self, filename):
         """
@@ -97,6 +106,8 @@ class PlainTextFrontEnd:
             for line in plainText:
                 encoded = line.encode('utf-8')
                 self.append(doc, encoded)
+        if self.rest is not None:
+            doc.appendSentence(self.rest)
         return doc
 
     def readStdin(self):
@@ -108,9 +119,12 @@ class PlainTextFrontEnd:
         for line in plainText:
             encoded = line.encode('utf-8')
             self.append(doc, encoded)
+        if self.rest is not None:
+            doc.appendSentence(self.rest)
         return doc
 
     def read(self, filename):
+        self.rest = None
         if filename == "-":
             return self.readStdin()
         else:
