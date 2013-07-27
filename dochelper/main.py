@@ -84,17 +84,17 @@ class PlainTextFrontEnd:
     """
 
     def __init__(self):
-        self.content = u''
+        self.content = u''.encode('utf-8')
 
     def append(self, string):
         self.content = self.content + string
 
     def parse(self):
-        if self.content is None or self.content == u'':
+        if self.content is None or len(self.content) == 0:
             raise ParseError, u'Empty'
 
         doc = Document()
-        splited = self.content.encode('utf-8').replace('\n', '').decode('utf-8').strip().split(u'。')
+        splited = self.content.replace(u'\n', u'').strip().split(u'。')
         for s in splited[0:-1]:
             if len(s):
                 s = s + u'。'
