@@ -72,56 +72,44 @@ class PlainTextFrontEnd:
     FrontEnd for Plain text.
     """
 
-    def append(self, document, string):
-        """
-        append string to an internal document.
+    def __init__(self):
+        self.content = u''
 
-        Arguments:
-        - `self`:
-        - `string`:
-        """
-        if self.rest is None:
-            target = string
-        else:
-            target = self.rest.encode('utf-8') + string
-        splited = target.replace('\n', '').decode('utf-8').strip().split(u'。')
+    def append(self, string):
+        self.content = self.content + string
+
+    def parse(self):
+        if self.content is None or self.content == u'':
+            raise Error, u'Empty'
+
+        doc = Document()
+        splited = self.content.encode('utf-8').replace('\n', '').decode('utf-8').strip().split(u'。')
         for s in splited[0:-1]:
             if len(s):
                 s = s + u'。'
-                document.appendSentence(s)
-        if target.endswith('。'):
-            document.appendSentence(splited[-1])
-            self.rest = None
-        else:
-            self.rest = splited[-1]
+                doc.appendSentence(s)
+
+        return doc
 
     def readFromFile(self, filename):
         """
-        Translate file to Document
+        Read form file
 
-        - `filename`: the file to be traslated
+        - `filename`: file
         """
-        doc = Document()
         with codecs.open(filename, 'r', 'utf-8') as plainText:
             for line in plainText:
                 encoded = line.encode('utf-8')
-                self.append(doc, encoded)
-        if self.rest is not None:
-            doc.appendSentence(self.rest)
-        return doc
+                self.append(encoded)
 
     def readStdin(self):
         """
-        Traslate standard input to Document
+        Read form standard input
         """
-        doc = Document()
         plainText  = codecs.getreader('utf-8')(sys.stdin)
         for line in plainText:
             encoded = line.encode('utf-8')
-            self.append(doc, encoded)
-        if self.rest is not None:
-            doc.appendSentence(self.rest)
-        return doc
+            self.append(encoded)
 
     def read(self, filename):
         self.rest = None
@@ -167,7 +155,11 @@ if __name__ == '__main__':
     if len(argvs) < 2:
         print ("Usage: python %s filename" % argvs[0])
     fe = PlainTextFrontEnd()
-    doc = fe.read(argvs[1])
+    fe.readFromFile(argvs[1])
+    doc = fe.parse()
     tagger = Tagger()
     tagger.tagDoc(doc)
-    doc.printTags()
+    # doc.printTags()
+    an = Analyzer()
+    an.analyze(doc)
+    an.printResult()
