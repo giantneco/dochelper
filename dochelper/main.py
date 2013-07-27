@@ -129,6 +129,27 @@ class PlainTextFrontEnd:
         else:
             return self.readFromFile(filename)
 
+class Tag:
+
+    def __init__(self, surface, features, cost):
+        """
+        
+        Arguments:
+        - `self`:
+        - `surface`:
+        - `features`:
+        - `cost`:
+        """
+        self.surface = surface
+        self.features = features
+        self.cost = cost
+        
+    def is_verb(self):
+        return self.features[0] == u'動詞'
+
+    def is_auxiliary_verb(self):
+        return self.features[0] == u'助動詞'
+
 class Tagger:
     """
     MeCab Tagger Wrapper
@@ -156,10 +177,30 @@ class Tagger:
                 surface = node.surface.decode('utf-8')
                 features = node.feature.decode('utf-8').split(',')
                 cost = node.cost
-                tags.append((surface,features,cost))
+                tags.append(Tag(surface,features,cost))
             node = node.next
         sentence.tags = tags
         sentence.tagged = True
+
+class EosAnalyzer:
+    """
+    文末が体言止めになっている時にアラートを上げる
+    """
+
+    def __init__(self):
+        pass
+
+    def analyze(self, doc):
+        res = []
+        for sentence in doc.sentences:
+            tags = sentence.tags
+            if len(tags) < 2:
+                continue
+            eos = tags[-2]
+            if not eos.is_verb() and not eos.is_auxiliary_verb():
+                res.append(sentence)
+            pass
+        return res
 
 if __name__ == '__main__':
     argvs = sys.argv
@@ -170,7 +211,7 @@ if __name__ == '__main__':
     doc = fe.parse()
     tagger = Tagger()
     tagger.tagDoc(doc)
-    # doc.printTags()
-    an = Analyzer()
-    an.analyze(doc)
-    an.printResult()
+    doc.printTags()
+    # an = Analyzer()
+    # an.analyze(doc)
+    # an.printResult()
