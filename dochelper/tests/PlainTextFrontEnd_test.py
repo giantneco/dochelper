@@ -15,7 +15,7 @@ class TestPlainTextFrontEnd(TestCase):
         frontend.append(u'これはペンです。')
         doc = frontend.parse()
         self.assertEqual(len(doc), 1)
-        self.assertEqual(doc[0].content, u'これはペンです。')
+        self.assertEqual(doc.sentence(0).content, u'これはペンです。')
 
     def test_parse_two_sentences(self):
         """
@@ -26,8 +26,8 @@ class TestPlainTextFrontEnd(TestCase):
         frontend.append(u'これはペンです。それは犬です。')
         doc = frontend.parse()
         self.assertEqual(len(doc), 2)
-        self.assertEqual(doc[0].content, u'これはペンです。')
-        self.assertEqual(doc[1].content, u'それは犬です。')
+        self.assertEqual(doc.sentence(0).content, u'これはペンです。')
+        self.assertEqual(doc.sentence(1).content, u'それは犬です。')
 
     def test_parse_truncated_one_sentence(self):
         """
@@ -39,7 +39,7 @@ class TestPlainTextFrontEnd(TestCase):
         frontend.parse()
         doc = frontend.parse()
         self.assertEqual(len(doc), 1)
-        self.assertEqual(doc[0].content, u'これはペンです。')
+        self.assertEqual(doc.sentence(0).content, u'これはペンです。')
 
 if __name__ == '__main__':
     main()

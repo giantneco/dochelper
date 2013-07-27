@@ -59,6 +59,9 @@ class Document:
     def appendSentence(self, content):
         self.sentences.append(Sentence(content))
 
+    def sentence(self, num):
+        return self.sentences[num]
+
     def sentences(self):
         for sentence in self.sentences:
             yield sentence
