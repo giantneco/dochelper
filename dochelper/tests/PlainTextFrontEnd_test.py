@@ -3,8 +3,18 @@
 
 from unittest import main,TestCase
 from dochelper.main import PlainTextFrontEnd
+from dochelper.main import ParseError
 
 class TestPlainTextFrontEnd(TestCase):
+
+    def test_parse_empty(self):
+        """
+        空の状態で parse を呼び、例外が投げられること。
+        """
+
+        frontend = PlainTextFrontEnd()
+        with self.assertRaises(ParseError):
+            frontend.parse()
 
     def test_parse_one_line(self):
         """

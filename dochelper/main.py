@@ -5,6 +5,14 @@ import sys
 import codecs
 import MeCab
 
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class ParseError(Error):
+    """Parse Error"""
+    pass
+
 class Sentence:
     """
     Represents single sentence.
@@ -83,7 +91,7 @@ class PlainTextFrontEnd:
 
     def parse(self):
         if self.content is None or self.content == u'':
-            raise Error, u'Empty'
+            raise ParseError, u'Empty'
 
         doc = Document()
         splited = self.content.encode('utf-8').replace('\n', '').decode('utf-8').strip().split(u'。')
